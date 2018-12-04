@@ -21,11 +21,25 @@ class Parser
     bool backtrack();
     Token getNextToken();
     Token peekNextToken();
-    bool term(string expected_type);
+    bool term(string expected_val);
+    bool termType(string expected_type);
     bool start();
     bool statement();
+    bool expression_statement();
+    bool iteration_statement();
     bool declaration_statement();
+    bool inc_dec_statement();
     bool inc_statement();
+    bool dec_statement();
+    bool condition();
+    bool LE_OP();
+    bool GE_OP();
+    bool LT_OP();
+    bool GT_OP();
+    bool EQ_OP();
+    bool NE_OP();
+    bool while_loop();
+    bool do_while_loop();
     bool type_specifier();
 
 };
