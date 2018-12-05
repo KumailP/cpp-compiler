@@ -10,7 +10,7 @@ bool Parser::saveCursor()
 
 bool Parser::backtrack()
 {
-    // cout << "CURSOR RESET TO: " << this->savedCursor << endl;
+    cout << "CURSOR RESET TO: " << this->savedCursor << endl;
     this->cursor = this->savedCursor;
     return true;
 }
@@ -47,34 +47,35 @@ Token Parser::peekNextToken()
 
 bool Parser::term(string expected_val)
 {
-    // cout << peekNextToken().val << " == " << expected_val << endl;
+    cout << peekNextToken().val << " == " << expected_val << endl;
     return getNextToken().val == expected_val;
 }
 
 bool Parser::termType(string expected_type)
 {
-    // cout << peekNextToken().val << ", " << peekNextToken().type << " == " << expected_type << endl;
+    cout << peekNextToken().val << ", " << peekNextToken().type << " == " << expected_type << endl;
     return getNextToken().type == expected_type;
 }
 
 bool Parser::start()
 {
-    return (statement());
+    return (termType("id") && term("main") && term("(") && termType("id") && term(")") && term("{") && statement() && term("}"));
 }
 
 bool Parser::statement()
 {
-    // return (saveCursor() && expression_statement() && statement()) ||
-    //     (backtrack() && saveCursor() && iteration_statement() && statement()) ||
-    //     (backtrack() && true);
-    return (saveCursor() && expression_statement()) ||
-           (backtrack() && saveCursor() && iteration_statement());
+    return (saveCursor() && expression_statement() && statement()) ||
+           (backtrack() && saveCursor() && iteration_statement() && statement()) ||
+           (backtrack() && true);
+    // return (saveCursor() && expression_statement()) ||
+    //        (backtrack() && saveCursor() && iteration_statement());
 }
 
 bool Parser::expression_statement()
 {
-    return (saveCursor() && declaration_statement()) ||
-           (backtrack() && saveCursor() && inc_dec_statement());
+    return (saveCursor() && inc_dec_statement()) ||
+           (backtrack() && saveCursor() && declaration_statement()) ||
+           (backtrack() && saveCursor() && assignment_statement());
 }
 
 bool Parser::condition()
@@ -140,18 +141,26 @@ bool Parser::while_loop()
 
 bool Parser::declaration_statement()
 {
-    if (type_specifier() && termType("id") && term("=") && termType("num")){
-        return true;
-    } else {
-        cout << "Error in declaration statement!" << endl;
-        return false;
-    }
+    return (type_specifier() && termType("id") && term("=") && termType("num"));
+}
+
+bool Parser::assignment_statement()
+{
+    return (termType("id") && term("=") && expression());
+}
+
+bool Parser::expression()
+{
+    return (saveCursor() && termType("id") && termType("symb") && termType("id")) ||
+           (backtrack() && saveCursor() && termType("id")) ||
+           (backtrack() && saveCursor() && termType("num")) ||
+           (backtrack() && true);
 }
 
 bool Parser::inc_dec_statement()
 {
     return (saveCursor() && inc_statement()) ||
-        (backtrack() && saveCursor() && dec_statement());
+           (backtrack() && saveCursor() && dec_statement());
 }
 
 bool Parser::dec_statement()

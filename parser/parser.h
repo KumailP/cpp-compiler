@@ -28,6 +28,8 @@ class Parser
     bool expression_statement();
     bool iteration_statement();
     bool declaration_statement();
+    bool assignment_statement();
+    bool expression();
     bool inc_dec_statement();
     bool inc_statement();
     bool dec_statement();

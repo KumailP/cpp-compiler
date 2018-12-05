@@ -1,0 +1,11 @@
+int main(int){
+    int a=0
+    int c=4
+    
+    a = c*a
+
+    int i=0
+    during(i<5){
+        a++
+    }
+}
