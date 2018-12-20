@@ -1,5 +1,5 @@
-#ifndef PARSER_H
-#define PARSER_H
+#ifndef SYNTAXANALYZER_H
+#define SYNTAXANALYZER_H
 
 #include<string>
 #include<fstream>
@@ -9,14 +9,16 @@
 
 using namespace std;
 
-class Parser
+class SyntaxAnalyzer
 {
   public:
     int cursor = 0;
     int savedCursor = 0;
     vector<Token> tokens; // list of tokens
+    bool verbose;
 
-    bool parse(vector<Token> tokens);
+    SyntaxAnalyzer(bool verbose);
+    bool analyze(vector<Token> tokens);
     bool saveCursor();
     bool backtrack();
     Token getNextToken();
@@ -29,6 +31,8 @@ class Parser
     bool iteration_statement();
     bool declaration_statement();
     bool assignment_statement();
+    bool conditional_statement();
+    bool compound_statement();
     bool expression();
     bool inc_dec_statement();
     bool inc_statement();
