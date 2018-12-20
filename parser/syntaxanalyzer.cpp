@@ -53,6 +53,8 @@ Token SyntaxAnalyzer::peekNextToken()
 
 bool SyntaxAnalyzer::term(string expected_val)
 {
+    // if (peekNextToken().val == ";")
+    //     return true;
     if (this->verbose)
         cout << peekNextToken().val << " == " << expected_val << endl;
     return getNextToken().val == expected_val;
@@ -72,10 +74,14 @@ bool SyntaxAnalyzer::start()
 
 bool SyntaxAnalyzer::statement()
 {
-    return (saveCursor() && expression_statement() && statement()) ||
-           (backtrack() && saveCursor() && conditional_statement() && statement()) ||
+    return (saveCursor() && expression_statement() && term(";") && statement()) ||
+           (backtrack() && saveCursor() && conditional_statement() && term(";") && statement()) ||
            (backtrack() && saveCursor() && iteration_statement() && statement()) ||
-           (backtrack() && true);
+           (backtrack());
+    // return (saveCursor() && expression_statement() && statement()) ||
+    //        (backtrack() && saveCursor() && conditional_statement() && statement()) ||
+    //        (backtrack() && saveCursor() && iteration_statement() && statement()) ||
+    //        (backtrack() && true);
     // return (saveCursor() && expression_statement()) ||
     //        (backtrack() && saveCursor() && iteration_statement());
 }
@@ -171,7 +177,12 @@ bool SyntaxAnalyzer::assignment_statement()
 
 bool SyntaxAnalyzer::expression()
 {
-    return (saveCursor() && termType("id") && termType("symb") && termType("id")) ||
+    cout << "EXPRESSION" << endl;
+    return (saveCursor() && termType("id") && term("=") && termType("id")) ||
+            (backtrack() && saveCursor() && termType("id") && term("*") && termType("id")) ||
+            (backtrack() && saveCursor() && termType("id") && term("+") && termType("id")) ||
+            (backtrack() && saveCursor() && termType("id") && term("/") && termType("id")) ||
+            (backtrack() && saveCursor() && termType("id") && term("-") && termType("id")) ||
            (backtrack() && saveCursor() && termType("id")) ||
            (backtrack() && saveCursor() && termType("num")) ||
            (backtrack() && true);
